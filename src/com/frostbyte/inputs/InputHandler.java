@@ -14,6 +14,7 @@ import com.frostbyte.display.Material;
 import com.frostbyte.items.Item;
 import com.frostbyte.main.GameFrame;
 import com.frostbyte.main.GameManager;
+import com.frostbyte.player.Player;
 
 public class InputHandler implements MouseListener, KeyListener, MouseMotionListener {
 	public List<MouseInput> inputs = new ArrayList<MouseInput>();
@@ -63,12 +64,13 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 		if (event.getButton() == MouseEvent.BUTTON1) {
 			if (gameManager.world.getPlayer().inventoryOpen()) {
 				gameManager.inventoryListener.onInventoryInteract(event.getX() + gameManager.world.getPlayerCamera().getX(), event.getY() + gameManager.world.getPlayerCamera().getY());
+				return;
 			}
 		}
 
 		if (event.getButton() == MouseEvent.BUTTON1) {
 			if (event.getX() + gameManager.world.getPlayerCamera().getX() > GameFrame.WIDTH / 2 + gameManager.world.getPlayerCamera().getX() - 124 && event.getX() + gameManager.world.getPlayerCamera().getX() < GameFrame.WIDTH / 2 + gameManager.world.getPlayerCamera().getX() + 123) {
-				if(event.getY() + gameManager.world.getPlayerCamera().getY() > 26 + gameManager.world.getPlayerCamera().getY() && event.getY() + gameManager.world.getPlayerCamera().getY() < 51 + gameManager.world.getPlayerCamera().getY()){
+				if (event.getY() + gameManager.world.getPlayerCamera().getY() > 26 + gameManager.world.getPlayerCamera().getY() && event.getY() + gameManager.world.getPlayerCamera().getY() < 51 + gameManager.world.getPlayerCamera().getY()) {
 					gameManager.inventoryListener.onGuiInteract(event.getX() + gameManager.world.getPlayerCamera().getX(), event.getY() + gameManager.world.getPlayerCamera().getY());
 					return;
 				}
@@ -87,6 +89,7 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 
 			if (gameManager.world.getBlockAtLocation(dropLocation).getMaterial() != Material.AIR) {
 				gameManager.blockListener.onBlockBreak(gameManager.world.getPlayer(), gameManager.world.getBlockAtLocation(dropLocation), dropLocation);
+				inputs.add(new MouseInput(gameManager.world.getPlayer(), gameManager.world.getBlockAtLocation(dropLocation), event.getX(), event.getY()));
 			}
 		}
 
@@ -94,38 +97,70 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 			Location placeLocation = new Location(gameManager.world, event.getX() + gameManager.world.getPlayerCamera().getX(), event.getY() + gameManager.world.getPlayerCamera().getY());
 
 			if (gameManager.world.getPlayer().getItemInHand() != null) {
-				gameManager.blockListener.onBlockPlace(gameManager.world.getPlayer(), BlockHelper.getBlockType(gameManager.world.getPlayer().getItemInHand().getMaterial()), placeLocation);
+				gameManager.blockListener.onBlockPlace(gameManager.world.getPlayer(), BlockHelper.getBlockType(gameManager.world.getPlayer().getItemInHand().getMaterial(), null), placeLocation);
+			}
+		}
+	}
+
+	public void mouseReleased(MouseEvent event) {
+		if (event.getButton() == MouseEvent.BUTTON1) {
+			if (containsPlayer(gameManager.world.getPlayer())) {
+				inputs.remove(findPlayerInput(gameManager.world.getPlayer()));
 			}
 		}
 	}
 
 	public void mouseDragged(MouseEvent event) {
-		if(inputs.isEmpty()){
+		if (inputs.isEmpty()) {
 			return;
 		}
-		
+
 		MouseInput input = null;
-		for(MouseInput mouseInput : inputs){
-			if(mouseInput.getPlayer() == gameManager.world.getPlayer()){
+		for (MouseInput mouseInput : inputs) {
+			if (mouseInput.getPlayer() == gameManager.world.getPlayer()) {
 				input = mouseInput;
 				break;
 			}
 		}
-		
-		if(input == null){
+
+		if (input == null) {
 			return;
 		}
-		
-		/** TODO for breaking blocks **/
+
+		if(input.getBlock() != gameManager.world.getBlockAtLocation(new Location(gameManager.world, input.getX(), input.getY()))){
+			inputs.remove(input);
+		}
 	}
-	
-	public void mouseReleased(MouseEvent event) {}
 
-	public void mouseMoved(MouseEvent event) {}
-	
-	public void mouseEntered(MouseEvent event) {}
+	public boolean containsPlayer(Player player) {
+		for (MouseInput mouseInput : inputs) {
+			if (mouseInput.getPlayer() == player) {
+				return true;
+			}
+		}
 
-	public void mouseExited(MouseEvent event) {}
-	
-	public void keyTyped(KeyEvent event) {}
+		return false;
+	}
+
+	public MouseInput findPlayerInput(Player player) {
+		for (MouseInput mouseInput : inputs) {
+			if (mouseInput.getPlayer() == player) {
+				return mouseInput;
+			}
+		}
+
+		return null;
+	}
+
+	public void mouseMoved(MouseEvent event) {
+	}
+
+	public void mouseEntered(MouseEvent event) {
+	}
+
+	public void mouseExited(MouseEvent event) {
+	}
+
+	public void keyTyped(KeyEvent event) {
+	}
 }

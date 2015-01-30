@@ -19,19 +19,19 @@ public class Inventory {
 	public Inventory(Player player, String name, int size) {
 		this.name = name;
 		content = new ItemStack[size];
-		this.player = player;
+		this.setPlayer(player);
 	}
 
 	public void draw(Graphics g) {
 		try {
-			g.drawImage(ImageIO.read(getClass().getResourceAsStream("/GUI/Inventory.png")), player.getWorld().getPlayerCamera().getX() + GameFrame.WIDTH / 3, player.getWorld().getPlayerCamera().getY() + GameFrame.HEIGHT / 3, null);
+			g.drawImage(ImageIO.read(getClass().getResourceAsStream("/GUI/Inventory.png")), GameFrame.WIDTH / 3, GameFrame.HEIGHT / 3, null);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		int items = 0;
-		int x = player.getWorld().getPlayerCamera().getX() + GameFrame.WIDTH / 3 + 21;
-		int y = player.getWorld().getPlayerCamera().getY() + GameFrame.HEIGHT / 3 + 95;
+		int x = GameFrame.WIDTH / 3 + 21;
+		int y = GameFrame.HEIGHT / 3 + 95;
 		for (ItemStack itemStack : content) {
 			if (itemStack != null) {
 				items++;
@@ -45,7 +45,7 @@ public class Inventory {
 				}
 
 				y = y - 23;
-				x = player.getWorld().getPlayerCamera().getX() + GameFrame.WIDTH / 3 + 21;
+				x = GameFrame.WIDTH / 3 + 21;
 			}
 		}
 	}
@@ -96,8 +96,8 @@ public class Inventory {
 	}
 
 	public ItemStack itemClick(int rawX, int rawY) {
-		int x = player.getWorld().getPlayerCamera().getX() + GameFrame.WIDTH / 3 + 21;
-		int y = player.getWorld().getPlayerCamera().getY() + GameFrame.HEIGHT / 3 + 95;
+		int x = GameFrame.WIDTH / 3 + 21;
+		int y = GameFrame.HEIGHT / 3 + 95;
 		int items = 0;
 
 		Rectangle2D playerRect = new Rectangle(rawX, rawY, 1, 1);
@@ -119,7 +119,7 @@ public class Inventory {
 				}
 
 				y = y - 23;
-				x = player.getWorld().getPlayerCamera().getX() + GameFrame.WIDTH / 3 + 21;
+				x = GameFrame.WIDTH / 3 + 21;
 			}
 		}
 
@@ -169,5 +169,13 @@ public class Inventory {
 
 	public void setAddingItem(boolean addingItem) {
 		this.addingItem = addingItem;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }

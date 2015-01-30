@@ -23,15 +23,15 @@ public class InventoryHotbar {
 	}
 	
 	public void draw(Graphics g){
-		g.drawImage(image, GameFrame.WIDTH/2 + player.getWorld().getPlayerCamera().getX() - 124, GameFrame.HEIGHT/2 + player.getWorld().getPlayerCamera().getY() + 26, null);
+		g.drawImage(image, GameFrame.WIDTH/2 - 124, 26, null);
 		
-		int startX = GameFrame.WIDTH/2 - player.getWorld().getPlayerCamera().getX() + 114;
+		int startX = GameFrame.WIDTH/2 - 114;
 		for(int i = 0; i < 10; i++){
 			ItemStack itemStack = player.getInventory().getContent()[i];
 			
 			if(itemStack != null){
 				int tempX = startX + (i * 23);
-				g.drawImage(itemStack.getMaterial().getImage(), tempX, 28 + player.getWorld().getPlayerCamera().getY(), null);
+				g.drawImage(itemStack.getMaterial().getImage(), tempX, 28, null);
 			}
 		}
 	}

@@ -5,10 +5,12 @@ import com.frostbyte.display.Material;
 
 public class BlockBedRock extends Block{
 	public BlockBedRock(Location location) {
-		super(location, Material.BEDROCK, 1000);
+		super(location, Material.BEDROCK);
+		this.duration = 100;
 	}
 
-	public BlockBedRock() {
-		super(null, Material.BEDROCK, 1000);
+	@Override
+	public void updateState() {
+		
 	}
 }

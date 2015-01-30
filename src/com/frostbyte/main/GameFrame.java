@@ -9,7 +9,7 @@ public class GameFrame extends JFrame {
 	public static int WIDTH = 800, HEIGHT = 600;
 
 	public GameFrame() {
-		setTitle("Bacon Donut Game Alpha v1.0.0");
+		setTitle("Frameshift Alpha v1.0.0");
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setDefaultCloseOperation(3);
 		setResizable(false);

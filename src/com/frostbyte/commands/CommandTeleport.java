@@ -2,8 +2,8 @@ package com.frostbyte.commands;
 
 import com.frostbyte.main.GameManager;
 
-public class TeleportCommand extends Command{
-	public TeleportCommand(GameManager gameManager) {
+public class CommandTeleport extends Command{
+	public CommandTeleport(GameManager gameManager) {
 		super("tp", gameManager);
 	}
 

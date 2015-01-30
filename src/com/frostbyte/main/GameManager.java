@@ -6,8 +6,10 @@ import java.awt.Image;
 
 import com.frostbyte.blocks.BlockHelper;
 import com.frostbyte.commands.CommandManager;
+import com.frostbyte.display.Location;
 import com.frostbyte.display.World;
 import com.frostbyte.inputs.InputHandler;
+import com.frostbyte.inputs.MouseInput;
 import com.frostbyte.listeners.BlockListener;
 import com.frostbyte.listeners.InventoryListener;
 
@@ -15,7 +17,7 @@ public class GameManager {
 	/** Classes **/
 	GameLoop gameLoop = new GameLoop(this);
 	GameFrame gameFrame = new GameFrame();
-	InputHandler inputHandler = new InputHandler(this);
+	public InputHandler inputHandler = new InputHandler(this);
 
 	/** Listeners **/
 	public BlockListener blockListener = new BlockListener(this);
@@ -48,6 +50,15 @@ public class GameManager {
 
 	public void update() {
 		world.update();
+		
+		for(MouseInput input : inputHandler.inputs){
+			Location dropLocation = new Location(world, input.getX() + world.getPlayerCamera().getX(), input.getY() + world.getPlayerCamera().getY());
+			blockListener.onBlockBreak(world.getPlayer(), world.getBlockAtLocation(dropLocation), dropLocation);
+			
+			if(world.getBlockAtLocation(dropLocation).getDuration() <= 0){
+				break;
+			}
+		}
 	}
 
 	public void draw(Graphics g) {
@@ -58,13 +69,13 @@ public class GameManager {
 		Graphics offgc;
 		Image offscreen = null;
 		Dimension d = gameFrame.getSize();
-		offscreen = gameFrame.createImage(world.getBlocks().length * 20, world.getBlocks()[0].length * 20);
+		offscreen = gameFrame.createImage(GameFrame.WIDTH, GameFrame.HEIGHT);
 		offgc = offscreen.getGraphics();
 		offgc.setColor(gameFrame.getBackground());
 		offgc.fillRect(0, 0, d.width, d.height);
 		offgc.setColor(gameFrame.getForeground());
 		draw(offgc);
-		gameFrame.getGraphics().drawImage(offscreen, -world.getPlayerCamera().getX(), -world.getPlayerCamera().getY(), null);
+		gameFrame.getGraphics().drawImage(offscreen, 0, 0, null);
 		offgc.dispose();
 	}
 

@@ -5,10 +5,12 @@ import com.frostbyte.display.Material;
 
 public class BlockAir extends Block{
 	public BlockAir(Location location) {
-		super(location, Material.AIR, 0);
+		super(location, Material.AIR);
+		this.duration = 100;
 	}
 	
-	public BlockAir() {
-		super(null, Material.AIR, 0);
+	@Override
+	public void updateState() {
+		
 	}
 }

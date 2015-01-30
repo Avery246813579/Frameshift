@@ -15,7 +15,7 @@ public class InventoryListener {
 	}
 	
 	public void onInventoryInteract(int x, int y){
-		ItemStack itemStack = gameManager.world.getPlayer().getInventory().itemClick(x, y);
+		ItemStack itemStack = gameManager.world.getPlayer().getInventory().itemClick(x - gameManager.world.getPlayerCamera().getX(), y - gameManager.world.getPlayerCamera().getY());
 
 		if (itemStack != null) {
 			gameManager.world.getPlayer().setItemInHand(itemStack);
@@ -24,15 +24,15 @@ public class InventoryListener {
 	}
 	
 	public void onGuiInteract(int x, int y){
-		int startX = GameFrame.WIDTH/2 + gameManager.world.getPlayerCamera().getX() - 114;
+		int startX = GameFrame.WIDTH/2 - 114;
 		
-		Rectangle2D playerRect = new Rectangle(x, y, 1, 1);
+		Rectangle2D playerRect = new Rectangle(x - gameManager.world.getPlayerCamera().getX(), y - gameManager.world.getPlayerCamera().getY(), 1, 1);
 		for(int i = 0; i < 10; i++){
 			int tempX = startX + (i * 23);
 			ItemStack itemStack = gameManager.world.getPlayer().getInventory().getContent()[i];
 
 			if(itemStack != null){
-				Rectangle2D itemRect = new Rectangle(tempX, 28 + gameManager.world.getPlayerCamera().getY(), 20, 20);
+				Rectangle2D itemRect = new Rectangle(tempX, 28, 20, 20);
 				
 				if(playerRect.intersects(itemRect)){
 					gameManager.world.getPlayer().setItemInHand(itemStack);

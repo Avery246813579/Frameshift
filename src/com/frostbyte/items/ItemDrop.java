@@ -23,7 +23,7 @@ public class ItemDrop {
 			return;
 		}
 
-		g.drawImage(itemStack.getMaterial().getImage(), location.getX(), location.getY(), 10, 10, null);
+		g.drawImage(itemStack.getMaterial().getImage(), location.getX() - location.getWorld().getPlayerCamera().getX(), location.getY() - location.getWorld().getPlayerCamera().getY(), 10, 10, null);
 	}
 
 	public void update() {

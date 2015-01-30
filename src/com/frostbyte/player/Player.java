@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.frostbyte.blocks.Block;
+import com.frostbyte.blocks.BlockHelper;
 import com.frostbyte.display.Animation;
 import com.frostbyte.display.Inventory;
 import com.frostbyte.display.InventoryHotbar;
@@ -15,25 +17,23 @@ import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
 import com.frostbyte.display.World;
 import com.frostbyte.entities.Entity;
+import com.frostbyte.entities.LivingEntity;
 import com.frostbyte.items.ItemDrop;
 
-public class Player extends Entity {
+public class Player extends LivingEntity {
 	private boolean isLeft, isRight, isJumping, isFalling;
-	private boolean facingRight = true, inJump;
+	private boolean inJump;
 	private int maxJumpDistance, jumpDistance;
-	private static final int WAITING = 0;
-	private static final int MOVING = 1;
-	private static final int JUMPING = 2;
 	private ItemStack itemInHand;
 	private Inventory inventory;
-	private Gamemode gamemode = Gamemode.Creative;
+	private Gamemode gamemode = Gamemode.CREATIVE;
 	boolean inventoryOpen;
 	InventoryHotbar inventoryHotbar;
 
 	public Player(World world, int x, int y) {
 		super(world, x, y);
 		this.animations = new ArrayList<Animation>(Arrays.asList(new Animation(new String[] { "/Sprites/Player/PLAYER_1.png", "/Sprites/Player/PLAYER_2.png", "/Sprites/Player/PLAYER_3.png" }, 5), new Animation(new String[] { "/Sprites/Player/PLAYER_4.png", "/Sprites/Player/PLAYER_5.png",
-				"/Sprites/Player/PLAYER_6.png" }, 10), new Animation(new String[] { "/Sprites/Player/PLAYER_7.png" }, 0)));
+				"/Sprites/Player/PLAYER_6.png" }, 10), new Animation(new String[] { "/Sprites/Player/PLAYER_7.png" }, 0), new Animation(new String[] { "/Sprites/Player/PLAYER_7.png" }, 0), new Animation(new String[]{"/Sprites/Player/PLAYER_DEATH_1.png", "/Sprites/Player/PLAYER_DEATH_2.png", "/Sprites/Player/PLAYER_DEATH_3.png"}, 3)));
 
 		this.height = 59;
 		this.width = 35;
@@ -50,13 +50,13 @@ public class Player extends Entity {
 
 		this.inventory = new Inventory(this, "Test", 40);
 		this.inventoryHotbar = new InventoryHotbar(this);
-		/**
-		 * this.inventory.addItem(new ItemStack(Material.STONE, 1));
-		 * this.inventory.addItem(new ItemStack(Material.DIRT, 1));
-		 * this.inventory.addItem(new ItemStack(Material.GRASS, 1));
-		 * this.inventory.addItem(new ItemGun(1)); this.itemInHand = new
-		 * ItemStack(Material.STONE, 1);
-		 **/
+		this.inventory.addItem(new ItemStack(Material.STONE, 1));
+		this.inventory.addItem(new ItemStack(Material.DIRT, 1));
+		this.inventory.addItem(new ItemStack(Material.GRASS, 1));
+		this.itemInHand = new ItemStack(Material.STONE, 1);
+		
+		this.health = this.maxHealth = 20;
+		this.hunger = 20;
 	}
 
 	public void update() {
@@ -129,7 +129,10 @@ public class Player extends Entity {
 			} else {
 				getVelocity().setY(getVelocity().getY() + fallSpeed);
 			}
+		}
 
+		if (getX() - (width / 2) <= 0) {
+			setLeft(false);
 		}
 
 		if (!isJumping && getWorld().getBlockAtLocation(new Location(getWorld(), getX() + (width / 2), getY() + height + getVelocity().getY())).getMaterial() == Material.AIR) {
@@ -166,9 +169,9 @@ public class Player extends Entity {
 			getVelocity().setY(0);
 		}
 
-		if (!isRight && !isLeft) {
+		if (!isRight && !isLeft && !isDead) {
 			getVelocity().setX(0);
-			setCurrentAnimation(WAITING);
+			setCurrentAnimation(IDLE);
 		}
 
 		if (!getWorld().getDrops().isEmpty()) {
@@ -190,7 +193,9 @@ public class Player extends Entity {
 	}
 
 	public boolean checkCollisionPoint(int x, int y) {
-		if (getWorld().getBlockAtLocation(new Location(getWorld(), x, y)).getMaterial() != Material.AIR) {
+		Block block = getWorld().getBlockAtLocation(new Location(getWorld(), x, y));
+
+		if (block.getMaterial() != Material.AIR && BlockHelper.getBlockType(block.getMaterial(), block.getLocation()).isSolid()) {
 			return true;
 		}
 
@@ -212,11 +217,11 @@ public class Player extends Entity {
 	@Override
 	public void draw(Graphics g) {
 		if (facingRight) {
-			g.drawImage(animations.get(getCurrentAnimation()).getAnimation(), getX(), getY(), null);
+			g.drawImage(animations.get(getCurrentAnimation()).getAnimation(), getX() - getWorld().getPlayerCamera().getX(), getY() - getWorld().getPlayerCamera().getY(), null);
 		} else {
-			g.drawImage(animations.get(getCurrentAnimation()).getAnimation(), getX() + width, getY(), -getCurrentFrame().getAnimation().getWidth(), getCurrentFrame().getAnimation().getHeight(), null);
+			g.drawImage(animations.get(getCurrentAnimation()).getAnimation(), getX() + width - getWorld().getPlayerCamera().getX(), getY() - getWorld().getPlayerCamera().getY(), -getCurrentFrame().getAnimation().getWidth(), getCurrentFrame().getAnimation().getHeight(), null);
 		}
-		
+
 		if (inventoryOpen) {
 			inventory.draw(g);
 		}

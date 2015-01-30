@@ -4,7 +4,7 @@ import com.frostbyte.display.Location;
 import com.frostbyte.display.Vector;
 
 public class MathUtil {
-	public static boolean getRandomBoolean(int amount) {
+	public static boolean getRandomBoolean(double amount) {
 		return Math.random() < (amount / 100.0);
 	}
 	

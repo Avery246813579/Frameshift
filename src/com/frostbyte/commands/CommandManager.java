@@ -16,7 +16,9 @@ public class CommandManager {
 		scanner = new Scanner(System.in);
 		
 		commands.add(new CommandClearInventory(gameManager));
-		commands.add(new TeleportCommand(gameManager));
+		commands.add(new CommandTeleport(gameManager));
+		commands.add(new GamemodeCommand(gameManager));
+		commands.add(new CommandDamage(gameManager));
 		checkCommand();
 	}
 

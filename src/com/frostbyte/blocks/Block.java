@@ -8,16 +8,27 @@ import com.frostbyte.display.Material;
 public abstract class Block {
 	private Location location;
 	private Material material;
-	private int duration;
+	protected int duration;
+	protected boolean isSolid = true;
 
-	public Block(Location location, Material material, int duration){
+	public Block(Location location, Material material){
 		this.location = location;
 		this.material = material;
-		this.duration = duration;
+	}
+	
+	protected abstract void updateState();
+	public void checkUpdateState(){
+		if(material == Material.GRASS || material == Material.DIRT){
+			updateState();
+		}
 	}
 	
 	public Location getLocation() {
 		return location;
+	}
+	
+	public void setLocation(Location location){
+		this.location = location;
 	}
 
 	public Material getMaterial() {
@@ -38,5 +49,9 @@ public abstract class Block {
 
 	public void setDuration(int duration) {
 		this.duration = duration;
+	}
+	
+	public boolean isSolid(){
+		return isSolid;
 	}
 }
