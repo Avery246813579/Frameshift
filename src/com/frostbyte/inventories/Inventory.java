@@ -1,4 +1,4 @@
-package com.frostbyte.display;
+package com.frostbyte.inventories;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import com.frostbyte.display.ItemStack;
+import com.frostbyte.display.Material;
 import com.frostbyte.main.GameFrame;
 import com.frostbyte.player.Player;
 
@@ -29,18 +31,17 @@ public class Inventory {
 			e.printStackTrace();
 		}
 
-		int items = 0;
 		int x = GameFrame.WIDTH / 3 + 21;
 		int y = GameFrame.HEIGHT / 3 + 95;
-		for (ItemStack itemStack : content) {
+		for (int i = 0; i < content.length; i++) {
+			ItemStack itemStack = content[i];
 			if (itemStack != null) {
-				items++;
 				g.drawImage(itemStack.getMaterial().getImage(), x, y, null);
-				x += 23;
 			}
 
-			if (items == 10 || items == 20 || items == 30) {
-				if (items == 10) {
+			x += 23;
+			if (i == 9 || i == 19 || i == 29) {
+				if (i == 9) {
 					y = y - 5;
 				}
 
@@ -71,7 +72,9 @@ public class Inventory {
 	}
 
 	public boolean contains(Material material) {
-		for (ItemStack is : content) {
+		for (int i = 0; i < content.length; i++) {
+			ItemStack is = content[i];
+			
 			if (is != null) {
 				if (is.getMaterial() == material) {
 					return true;
@@ -80,6 +83,17 @@ public class Inventory {
 		}
 
 		return false;
+	}
+
+	public void remove(ItemStack itemStack) {
+		for (int i = 0; i < content.length; i++) {
+			ItemStack is = content[i];
+
+			if (itemStack == is) {
+				content[i] = null;
+				return;
+			}
+		}
 	}
 
 	public void remove(Material material) {
@@ -101,7 +115,9 @@ public class Inventory {
 		int items = 0;
 
 		Rectangle2D playerRect = new Rectangle(rawX, rawY, 1, 1);
-		for (ItemStack itemStack : content) {
+		for (int i = 0; i < content.length; i++) {
+			ItemStack itemStack = content[i];
+			
 			if (itemStack != null) {
 				items++;
 
@@ -113,8 +129,8 @@ public class Inventory {
 				x += 23;
 			}
 
-			if (items == 10 || items == 20 || items == 30) {
-				if (items == 10) {
+			if (items == 9 || items == 18 || items == 27) {
+				if (items == 9) {
 					y = y - 5;
 				}
 
@@ -124,6 +140,36 @@ public class Inventory {
 		}
 
 		return null;
+	}
+
+	public int getInventorySlot(int rawX, int rawY) {
+		int x = GameFrame.WIDTH / 3 + 21;
+		int y = GameFrame.HEIGHT / 3 + 95;
+
+		for (int i = 0; i < content.length; i++) {
+			if (rawX > x && rawX < (x + 23)) {
+				if (rawY > y && rawY < (y + 23)) {
+					return i;
+				}
+			}
+
+			x += 23;
+
+			if (i == 9 || i == 19 || i == 29) {
+				if (i == 9) {
+					y = y - 5;
+				}
+
+				y = y - 23;
+				x = GameFrame.WIDTH / 3 + 21;
+			}
+		}
+
+		return -1;
+	}
+
+	public void setItem(int x, ItemStack itemStack) {
+		content[x] = itemStack;
 	}
 
 	public boolean isFull() {

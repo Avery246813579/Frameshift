@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockEmeraldOre extends Block{
 	public BlockEmeraldOre(Location location) {
-		super(location, Material.EMERALD_ORE);
-		this.duration = 100;
+		super(location, Material.EMERALD_ORE, 100);
 	}
 	
 	@Override

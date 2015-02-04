@@ -56,5 +56,8 @@ public class BlockHelper {
 		blocks.add(new BlockTopazOre(null));
 		blocks.add(new BlockOakLeave(null));
 		blocks.add(new BlockOakWood(null));
+		blocks.add(new BlockOakAcorn(null));
+		blocks.add(new BlockRock(null));
+		blocks.add(new BlockStoneFurnace(null));
 	}
 }

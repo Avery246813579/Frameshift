@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockBedRock extends Block{
 	public BlockBedRock(Location location) {
-		super(location, Material.BEDROCK);
-		this.duration = 100;
+		super(location, Material.BEDROCK, 100);
 	}
 
 	@Override

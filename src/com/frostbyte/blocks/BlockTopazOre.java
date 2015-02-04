@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockTopazOre extends Block{
 	public BlockTopazOre(Location location) {
-		super(location, Material.TOPAZ_ORE);
-		this.duration = 100;
+		super(location, Material.TOPAZ_ORE, 100);
 	}
 	
 	@Override

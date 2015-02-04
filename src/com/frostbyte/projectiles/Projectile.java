@@ -3,7 +3,7 @@ package com.frostbyte.projectiles;
 import com.frostbyte.display.Animation;
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Vector;
-import com.frostbyte.entities.Entity;
+import com.frostbyte.entities.types.Entity;
 
 public abstract class Projectile extends Entity{
 	Vector vector;

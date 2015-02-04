@@ -4,7 +4,6 @@ import com.frostbyte.blocks.Block;
 import com.frostbyte.blocks.BlockAir;
 import com.frostbyte.blocks.BlockStone;
 import com.frostbyte.display.Location;
-import com.frostbyte.display.World;
 
 public class WorldChunk {
 	private Block[][] blocks = new Block[40][40];

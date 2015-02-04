@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockDirt extends Block {
 	public BlockDirt(Location location) {
-		super(location, Material.DIRT);
-		this.duration = 100;
+		super(location, Material.DIRT, 400);
 	}
 
 	@Override

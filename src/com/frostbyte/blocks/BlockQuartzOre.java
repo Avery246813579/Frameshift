@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockQuartzOre extends Block{
 	public BlockQuartzOre(Location location) {
-		super(location, Material.QUARTZ_ORE);
-		this.duration = 100;
+		super(location, Material.QUARTZ_ORE, 100);
 	}
 	
 	@Override

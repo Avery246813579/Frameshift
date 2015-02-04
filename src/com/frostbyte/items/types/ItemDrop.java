@@ -1,7 +1,8 @@
-package com.frostbyte.items;
+package com.frostbyte.items.types;
 
 import java.awt.Graphics;
 
+import com.frostbyte.blocks.BlockHelper;
 import com.frostbyte.display.ItemStack;
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
@@ -31,7 +32,7 @@ public class ItemDrop {
 			return;
 		}
 
-		if (location.getWorld().getBlockAtLocation(new Location(location.getWorld(), location.getX(), location.getY() + 11)).getMaterial() == Material.AIR) {
+		if (!BlockHelper.getBlockType(location.getWorld().getBlockAtLocation(new Location(location.getWorld(), location.getX(), location.getY() + 13)).getMaterial(), location).isSolid()) {
 			if (location.getWorld().getBlockAtLocation(new Location(location.getWorld(), location.getX(), location.getY() + moveSpeed)).getMaterial() != Material.AIR) {
 				moveSpeed = 0;
 				return;
@@ -39,7 +40,7 @@ public class ItemDrop {
 
 			location.setY(location.getY() + moveSpeed);
 
-			if (moveSpeed < 10) {
+			if (moveSpeed < 6) {
 				moveSpeed++;
 			}
 		} else {

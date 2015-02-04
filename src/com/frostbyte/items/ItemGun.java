@@ -2,6 +2,7 @@ package com.frostbyte.items;
 
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
+import com.frostbyte.items.types.Item;
 import com.frostbyte.projectiles.ProjectileBullet;
 import com.frostbyte.util.MathUtil;
 

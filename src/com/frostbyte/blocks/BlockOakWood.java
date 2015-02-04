@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockOakWood extends Block{
 	public BlockOakWood(Location location) {
-		super(location, Material.OAK_WOOD);
-		this.duration = 100;
+		super(location, Material.OAK_WOOD, 500);
 		this.isSolid = false;
 	}
 

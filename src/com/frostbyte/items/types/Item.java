@@ -1,4 +1,4 @@
-package com.frostbyte.items;
+package com.frostbyte.items.types;
 
 import com.frostbyte.display.ItemStack;
 import com.frostbyte.display.Location;

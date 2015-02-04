@@ -5,8 +5,8 @@ import com.frostbyte.display.Material;
 
 public class BlockAir extends Block{
 	public BlockAir(Location location) {
-		super(location, Material.AIR);
-		this.duration = 100;
+		super(location, Material.AIR, 100);
+		this.isSolid = false;
 	}
 	
 	@Override

@@ -1,12 +1,14 @@
 package com.frostbyte.blocks;
 
+import com.frostbyte.display.ItemStack;
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
 
 public class BlockGrass extends Block {
 	public BlockGrass(Location location) {
-		super(location, Material.GRASS);
-		this.duration = 100;
+		super(location, Material.GRASS, 500);
+		
+		setDrop(new ItemStack(Material.DIRT, 1));
 	}
 
 	@Override

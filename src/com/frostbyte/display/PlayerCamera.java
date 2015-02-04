@@ -1,7 +1,8 @@
 package com.frostbyte.display;
 
-import com.frostbyte.entities.Entity;
+import com.frostbyte.entities.types.Entity;
 import com.frostbyte.main.GameFrame;
+import com.frostbyte.world.World;
 
 public class PlayerCamera {
 	private World world;

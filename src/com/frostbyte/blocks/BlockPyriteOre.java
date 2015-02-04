@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockPyriteOre extends Block{
 	public BlockPyriteOre(Location location) {
-		super(location, Material.PYRITE_ORE);
-		this.duration = 100;
+		super(location, Material.PYRITE_ORE, 100);
 	}
 	
 	@Override

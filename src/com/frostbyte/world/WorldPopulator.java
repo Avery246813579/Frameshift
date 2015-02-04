@@ -1,8 +1,10 @@
-package com.frostbyte.display;
+package com.frostbyte.world;
 
 import java.util.Random;
 
 import com.frostbyte.blocks.Block;
+import com.frostbyte.display.Location;
+import com.frostbyte.display.Material;
 import com.frostbyte.util.MathUtil;
 
 public class WorldPopulator {
@@ -19,7 +21,8 @@ public class WorldPopulator {
 		generateOres();
 		generateHills();
 		createTrees();
-
+		generateBedrock();
+		spawnRocks();
 	}
 
 	private void initialGroundTerrian() {
@@ -41,9 +44,15 @@ public class WorldPopulator {
 				}
 
 				if (oppSide == 41) {
-					currentBlock.setMaterial(Material.GRASS);
+					currentBlock.setMaterial(Material.DIRT);
 				}
 			}
+		}
+	}
+
+	private void generateBedrock() {
+		for (int x = 0; x < world.getBlocks().length; x++) {
+			world.getBlocks()[x][world.getBlocks()[0].length - 1].setMaterial(Material.BEDROCK);
 		}
 	}
 
@@ -74,20 +83,20 @@ public class WorldPopulator {
 	}
 
 	public void generateOreChunk(Material material, int rawX, int rawY) {
-		int amountY = new Random().nextInt(3) + 1;
+		int amountY = new Random().nextInt(3) + 2;
 
 		for (int y = rawY; y < rawY + amountY; y++) {
-			int amountX = new Random().nextInt(3) + 1;
+			int amountX = new Random().nextInt(3) + 2;
 
 			for (int x = rawX; x < rawX + amountX; x++) {
-				if(x >= world.getBlocks().length){
+				if (x >= world.getBlocks().length) {
 					break;
 				}
-				
-				if(y >= world.getBlocks()[0].length){
+
+				if (y >= world.getBlocks()[0].length) {
 					break;
 				}
-				
+
 				world.getBlocks()[x][y].setMaterial(material);
 			}
 		}
@@ -138,12 +147,21 @@ public class WorldPopulator {
 	}
 
 	private void createTrees() {
+		int distanceBetween = 0;
+
 		for (int x = 0; x < world.getBlocks().length; x++) {
 			for (int y = (world.getBlocks()[0].length - 1); y > 0; y--) {
 				int oppSide = world.getBlocks()[0].length - y;
 
+				if (oppSide == 42) {
+					distanceBetween++;
+				}
+				
 				if (oppSide == 42 && MathUtil.getRandomBoolean(10) && world.getBlockAtLocation(new Location(world, x * 20, y * 20)).getMaterial() == Material.AIR) {
-					createTree(x, y);
+					if (distanceBetween >= 10) {
+						distanceBetween = 0;
+						createTree(x, y);
+					}
 				}
 			}
 		}
@@ -159,39 +177,50 @@ public class WorldPopulator {
 
 		int yAmount = new Random().nextInt(5) + 3;
 		int xAmount = new Random().nextInt(5) + 3;
-		
-		if(yAmount == 4){
-			yAmount = 5;
-		}
-		
-		if(xAmount == 4){
-			xAmount = 5;
-		}
-		
-		if(xAmount > 5){
-			xAmount = 5;
-		}
-		
-		if(yAmount > 5){
+
+		if (yAmount == 4) {
 			yAmount = 5;
 		}
 
-		for(int y = rawY - layerSize; y < rawY + yAmount - layerSize; y++){
-			for(int x = rawX - (xAmount/2); x < rawX + xAmount - (xAmount/2); x++){
-				if(x >= world.getBlocks().length){
+		if (xAmount == 4) {
+			xAmount = 5;
+		}
+
+		if (xAmount > 5) {
+			xAmount = 5;
+		}
+
+		if (yAmount > 5) {
+			yAmount = 5;
+		}
+
+		for (int y = rawY - layerSize; y < rawY + yAmount - layerSize; y++) {
+			for (int x = rawX - (xAmount / 2); x < rawX + xAmount - (xAmount / 2); x++) {
+				if (x >= world.getBlocks().length) {
 					break;
 				}
-				
-				if(y >= world.getBlocks()[0].length){
+
+				if (y >= world.getBlocks()[0].length) {
 					break;
 				}
-				
 
 				Block block = world.getBlocks()[x][y];
-				if(block.getMaterial() == Material.AIR){
+				if (block.getMaterial() == Material.AIR) {
 					block.setMaterial(Material.OAK_LEAVE);
 				}
 			}
+		}
+	}
+	
+	public void spawnRocks(){
+		for(int x = 0; x < world.getBlocks().length; x++){
+			for (int y = (world.getBlocks()[0].length - 1); y > 0; y--) {
+				int oppSide = world.getBlocks()[0].length - y;
+				
+				if(oppSide == 42 && MathUtil.getRandomBoolean(5) && world.getBlockAtLocation(new Location(world, x * 20, y * 20)).getMaterial() == Material.AIR){
+					world.getBlocks()[x][y].setMaterial(Material.ROCK);
+				}
+			}	
 		}
 	}
 

@@ -17,8 +17,11 @@ public class CommandManager {
 		
 		commands.add(new CommandClearInventory(gameManager));
 		commands.add(new CommandTeleport(gameManager));
-		commands.add(new GamemodeCommand(gameManager));
+		commands.add(new CommandGamemode(gameManager));
 		commands.add(new CommandDamage(gameManager));
+		commands.add(new CommandSpawn(gameManager));
+		commands.add(new CommandLocation(gameManager));
+		commands.add(new CommandGive(gameManager));
 		checkCommand();
 	}
 

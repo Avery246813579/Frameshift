@@ -7,56 +7,54 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.frostbyte.blocks.Block;
-import com.frostbyte.blocks.BlockHelper;
 import com.frostbyte.display.Animation;
-import com.frostbyte.display.Inventory;
-import com.frostbyte.display.InventoryHotbar;
 import com.frostbyte.display.ItemStack;
-import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
-import com.frostbyte.display.World;
-import com.frostbyte.entities.Entity;
-import com.frostbyte.entities.LivingEntity;
-import com.frostbyte.items.ItemDrop;
+import com.frostbyte.entities.types.Entity;
+import com.frostbyte.entities.types.LivingEntity;
+import com.frostbyte.inventories.CraftingInventory;
+import com.frostbyte.inventories.Inventory;
+import com.frostbyte.inventories.InventoryHotbar;
+import com.frostbyte.items.types.ItemDrop;
+import com.frostbyte.world.World;
 
 public class Player extends LivingEntity {
-	private boolean isLeft, isRight, isJumping, isFalling;
-	private boolean inJump;
-	private int maxJumpDistance, jumpDistance;
 	private ItemStack itemInHand;
 	private Inventory inventory;
-	private Gamemode gamemode = Gamemode.CREATIVE;
+	CraftingInventory craftingInventory;
+	private Gamemode gamemode = Gamemode.SURVIVAL;
 	boolean inventoryOpen;
 	InventoryHotbar inventoryHotbar;
 
 	public Player(World world, int x, int y) {
 		super(world, x, y);
 		this.animations = new ArrayList<Animation>(Arrays.asList(new Animation(new String[] { "/Sprites/Player/PLAYER_1.png", "/Sprites/Player/PLAYER_2.png", "/Sprites/Player/PLAYER_3.png" }, 5), new Animation(new String[] { "/Sprites/Player/PLAYER_4.png", "/Sprites/Player/PLAYER_5.png",
-				"/Sprites/Player/PLAYER_6.png" }, 10), new Animation(new String[] { "/Sprites/Player/PLAYER_7.png" }, 0), new Animation(new String[] { "/Sprites/Player/PLAYER_7.png" }, 0), new Animation(new String[]{"/Sprites/Player/PLAYER_DEATH_1.png", "/Sprites/Player/PLAYER_DEATH_2.png", "/Sprites/Player/PLAYER_DEATH_3.png"}, 3)));
+				"/Sprites/Player/PLAYER_6.png" }, 10), new Animation(new String[] { "/Sprites/Player/PLAYER_7.png" }, 0), new Animation(new String[] { "/Sprites/Player/PLAYER_7.png" }, 0), new Animation(new String[] { "/Sprites/Player/PLAYER_DEATH_1.png", "/Sprites/Player/PLAYER_DEATH_2.png",
+				"/Sprites/Player/PLAYER_DEATH_3.png" }, 3), new Animation(new String[] { "/Sprites/Player/PLAYER_DAMAGE.png" }, 1)));
 
 		this.height = 59;
 		this.width = 35;
 
-		this.moveSpeed = 2;
-		this.fallSpeed = 2;
-		this.jumpSpeed = 2;
+		this.moveSpeed = 1;
+		this.fallSpeed = 1;
+		this.jumpSpeed = 1;
 
-		this.maxSpeed = 6;
-		this.maxJump = 6;
-		this.maxFall = 6;
+		this.maxRun = 3;
+		this.maxSpeed = 2;
+		this.maxJump = 3;
+		this.maxFall = 2;
 
 		this.maxJumpDistance = 20;
 
 		this.inventory = new Inventory(this, "Test", 40);
 		this.inventoryHotbar = new InventoryHotbar(this);
-		this.inventory.addItem(new ItemStack(Material.STONE, 1));
-		this.inventory.addItem(new ItemStack(Material.DIRT, 1));
-		this.inventory.addItem(new ItemStack(Material.GRASS, 1));
 		this.itemInHand = new ItemStack(Material.STONE, 1);
-		
-		this.health = this.maxHealth = 20;
-		this.hunger = 20;
+
+		this.craftingInventory = new CraftingInventory(this, 14);
+
+		this.health = this.hunger = this.maxHealth = 20;
+		this.stamina = this.maxStamina = 100;
+		this.damage = 5;
 	}
 
 	public void update() {
@@ -64,118 +62,13 @@ public class Player extends LivingEntity {
 		checkMovement();
 		updateLocation();
 		checkEntityCollisions();
+		craftingInventory.update();
 	}
 
 	public void checkMovement() {
-		if (isRight) {
-			isLeft = false;
-
-			if (getVelocity().getX() + moveSpeed >= maxSpeed) {
-				getVelocity().setX(maxSpeed);
-			} else {
-				getVelocity().setX(getVelocity().getX() + moveSpeed);
-			}
-
-			setCurrentAnimation(MOVING);
-			this.facingRight = true;
-		}
-
-		if (isLeft) {
-			isRight = false;
-
-			if (getVelocity().getX() - moveSpeed <= -maxSpeed) {
-				getVelocity().setX(-maxSpeed);
-			} else {
-				getVelocity().setX(getVelocity().getX() - moveSpeed);
-			}
-
-			setCurrentAnimation(MOVING);
-			this.facingRight = false;
-		}
-
-		if (isJumping && getVelocity().getY() <= 0 && !inJump) {
-			isFalling = false;
-
-			if (getVelocity().getY() - jumpSpeed <= maxJump) {
-				getVelocity().setY(-maxJump);
-			} else {
-				getVelocity().setY(getVelocity().getY() - jumpSpeed);
-			}
-
-			if (jumpDistance > maxJumpDistance) {
-				isJumping = false;
-				jumpDistance = 0;
-				inJump = true;
-			} else {
-				jumpDistance += -getVelocity().getY();
-			}
-
-			setCurrentAnimation(JUMPING);
-		}
-
-		if (isFalling) {
-			if (!inJump) {
-				inJump = true;
-			}
-
-			isJumping = false;
-
-			if (jumpDistance != 0) {
-				jumpDistance = 0;
-			}
-
-			if (getVelocity().getY() + fallSpeed >= maxFall) {
-				getVelocity().setY(maxFall);
-			} else {
-				getVelocity().setY(getVelocity().getY() + fallSpeed);
-			}
-		}
-
-		if (getX() - (width / 2) <= 0) {
-			setLeft(false);
-		}
-
-		if (!isJumping && getWorld().getBlockAtLocation(new Location(getWorld(), getX() + (width / 2), getY() + height + getVelocity().getY())).getMaterial() == Material.AIR) {
-			isFalling = true;
-		}
-
-		if (isJumping) {
-			if (checkCollisionPoint(getX(), getY() + getVelocity().getY()) || checkCollisionPoint(getX() + (width / 2), getY() + getVelocity().getY()) || checkCollisionPoint(getX() + width, getY() + getVelocity().getY())) {
-				isJumping = false;
-			}
-		}
-
-		if (isFalling) {
-			if (checkCollisionPoint(getX(), getY() + height + getVelocity().getY()) || checkCollisionPoint(getX() + (width / 2), getY() + height + getVelocity().getY()) || checkCollisionPoint(getX() + width, getY() + height + getVelocity().getY())) {
-				isFalling = false;
-				inJump = false;
-			}
-		}
-
-		if (isRight) {
-			if (checkCollisionPoint(getX() + width + getVelocity().getX(), getY()) || checkCollisionPoint(getX() + width + getVelocity().getX(), getY() + (height / 2)) || checkCollisionPoint(getX() + width + getVelocity().getX(), getY() + (height / 3))
-					|| checkCollisionPoint(getX() + width + getVelocity().getX(), getY() + height)) {
-				isRight = false;
-			}
-		}
-
-		if (isLeft) {
-			if (checkCollisionPoint(getX() + getVelocity().getX(), getY()) || checkCollisionPoint(getX() + getVelocity().getX(), getY() + (height / 2)) || checkCollisionPoint(getX() + getVelocity().getX(), getY() + (height / 3)) || checkCollisionPoint(getX() + getVelocity().getX(), getY() + height)) {
-				isLeft = false;
-			}
-		}
-
-		if (!isFalling && !isJumping) {
-			getVelocity().setY(0);
-		}
-
-		if (!isRight && !isLeft && !isDead) {
-			getVelocity().setX(0);
-			setCurrentAnimation(IDLE);
-		}
+		Rectangle2D playerRect = new Rectangle(getX(), getY(), width, height);
 
 		if (!getWorld().getDrops().isEmpty()) {
-			Rectangle2D playerRect = new Rectangle(getX(), getY(), width, height);
 			for (ItemDrop itemDrop : getWorld().getDrops()) {
 				Rectangle2D itemRect = new Rectangle(itemDrop.getLocation().getX(), itemDrop.getLocation().getY(), 10, 10);
 
@@ -192,16 +85,6 @@ public class Player extends LivingEntity {
 		super.checkMovement();
 	}
 
-	public boolean checkCollisionPoint(int x, int y) {
-		Block block = getWorld().getBlockAtLocation(new Location(getWorld(), x, y));
-
-		if (block.getMaterial() != Material.AIR && BlockHelper.getBlockType(block.getMaterial(), block.getLocation()).isSolid()) {
-			return true;
-		}
-
-		return false;
-	}
-
 	public void openInventory() {
 		inventoryOpen = true;
 	}
@@ -216,19 +99,7 @@ public class Player extends LivingEntity {
 
 	@Override
 	public void draw(Graphics g) {
-		if (facingRight) {
-			g.drawImage(animations.get(getCurrentAnimation()).getAnimation(), getX() - getWorld().getPlayerCamera().getX(), getY() - getWorld().getPlayerCamera().getY(), null);
-		} else {
-			g.drawImage(animations.get(getCurrentAnimation()).getAnimation(), getX() + width - getWorld().getPlayerCamera().getX(), getY() - getWorld().getPlayerCamera().getY(), -getCurrentFrame().getAnimation().getWidth(), getCurrentFrame().getAnimation().getHeight(), null);
-		}
-
-		if (inventoryOpen) {
-			inventory.draw(g);
-		}
-
-		if (inventoryHotbar != null) {
-			inventoryHotbar.draw(g);
-		}
+		super.draw(g);
 	}
 
 	public void updateLocation() {
@@ -293,5 +164,29 @@ public class Player extends LivingEntity {
 
 	public void setGamemode(Gamemode gamemode) {
 		this.gamemode = gamemode;
+	}
+
+	public CraftingInventory getCraftingInventory() {
+		return craftingInventory;
+	}
+
+	public boolean isInventoryOpen() {
+		return inventoryOpen;
+	}
+
+	public void setInventoryOpen(boolean inventoryOpen) {
+		this.inventoryOpen = inventoryOpen;
+	}
+
+	public InventoryHotbar getInventoryHotbar() {
+		return inventoryHotbar;
+	}
+
+	public void setInventoryHotbar(InventoryHotbar inventoryHotbar) {
+		this.inventoryHotbar = inventoryHotbar;
+	}
+
+	public void setCraftingInventory(CraftingInventory craftingInventory) {
+		this.craftingInventory = craftingInventory;
 	}
 }

@@ -1,4 +1,4 @@
-package com.frostbyte.entities;
+package com.frostbyte.entities.types;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -9,12 +9,12 @@ import java.util.List;
 import com.frostbyte.display.Animation;
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Vector;
-import com.frostbyte.display.World;
+import com.frostbyte.world.World;
 
 public class Entity {
 	protected List<Animation> animations = new ArrayList<Animation>();
-	protected int width, height, moveSpeed, jumpSpeed, fallSpeed, maxSpeed, maxJump, maxFall;
 	private int x, y, currentAnimation;
+	protected int width, height;
 	private Vector velocity;
 	private World world;
 	

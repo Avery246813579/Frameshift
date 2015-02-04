@@ -1,5 +1,7 @@
 package com.frostbyte.display;
 
+import com.frostbyte.world.World;
+
 public class Location {
 	private World world;
 	private int x, y;
@@ -20,6 +22,10 @@ public class Location {
 
 	public void setWorld(World world) {
 		this.world = world;
+	}
+	
+	public Location add(int x, int y){
+		return new Location(getWorld(), this.x + x, this.y + y);
 	}
 
 	public int getX() {

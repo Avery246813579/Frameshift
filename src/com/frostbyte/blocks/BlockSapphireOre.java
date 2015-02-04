@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockSapphireOre extends Block{
 	public BlockSapphireOre(Location location) {
-		super(location, Material.SAPPHIRE_ORE);
-		this.duration = 100;
+		super(location, Material.SAPPHIRE_ORE, 100);
 	}
 	
 	@Override

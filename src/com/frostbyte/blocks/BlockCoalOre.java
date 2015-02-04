@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockCoalOre extends Block{
 	public BlockCoalOre(Location location) {
-		super(location, Material.COAL_ORE);
-		this.duration = 100;
+		super(location, Material.COAL_ORE, 100);
 	}
 	
 	@Override

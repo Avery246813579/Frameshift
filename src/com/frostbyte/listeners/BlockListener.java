@@ -4,9 +4,9 @@ import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 
 import com.frostbyte.blocks.Block;
-import com.frostbyte.display.ItemStack;
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
+import com.frostbyte.items.types.Item;
 import com.frostbyte.main.GameManager;
 import com.frostbyte.player.Gamemode;
 import com.frostbyte.player.Player;
@@ -24,6 +24,10 @@ public class BlockListener {
 		if (blockAtLocation.getMaterial() != Material.AIR) {
 			return;
 		}
+		
+		if(gameManager.world.getPlayer().getItemInHand() instanceof Item){
+			return;
+		}
 
 		if (!player.getInventory().contains(player.getItemInHand().getMaterial())) {
 			return;
@@ -36,6 +40,7 @@ public class BlockListener {
 		}
 
 		blockAtLocation.setMaterial(block.getMaterial());
+		blockAtLocation.setDuration(block.getMaxDuration());
 		
 		if (gameManager.world.getPlayer().getGamemode() == Gamemode.SURVIVAL) {
 			player.getInventory().remove(block.getMaterial());
@@ -49,8 +54,12 @@ public class BlockListener {
 			breakBlock.setMaterial(Material.AIR);
 			return;
 		} else {
+			if(breakBlock.getMaterial() == Material.BEDROCK){
+				return;
+			}
+			
 			if (gameManager.inputHandler.containsPlayer(player)) {
-				breakBlock.setDuration(breakBlock.getDuration() - 5);
+				gameManager.world.getBlocks()[breakBlock.getLocation().getX()][breakBlock.getLocation().getY()].setDuration(breakBlock.getDuration() - 5);
 
 				if (breakBlock.getDuration() > 0) {
 					return;
@@ -60,7 +69,7 @@ public class BlockListener {
 			}
 		}
 
-		gameManager.world.dropItem(new ItemStack(gameManager.world.getBlockAtLocation(dropLocation).getMaterial(), 1), new Location(dropLocation.getWorld(), (int) (dropLocation.getX() / 20) * 20 + 5, (int) (dropLocation.getY() / 20) * 20 + 5));
+		gameManager.world.dropItem(gameManager.world.getBlockAtLocation(dropLocation).getItemDrop(), new Location(dropLocation.getWorld(), (int) (dropLocation.getX() / 20) * 20 + 5, (int) (dropLocation.getY() / 20) * 20 + 5));
 		breakBlock.setMaterial(Material.AIR);
 		gameManager.inputHandler.inputs.remove(gameManager.inputHandler.findPlayerInput(gameManager.world.getPlayer()));
 	}

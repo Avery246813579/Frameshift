@@ -5,8 +5,7 @@ import com.frostbyte.display.Material;
 
 public class BlockRubyOre extends Block{
 	public BlockRubyOre(Location location) {
-		super(location, Material.RUBY_ORE);
-		this.duration = 100;
+		super(location, Material.RUBY_ORE, 100);
 	}
 	
 	@Override

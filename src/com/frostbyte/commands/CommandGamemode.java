@@ -3,8 +3,8 @@ package com.frostbyte.commands;
 import com.frostbyte.main.GameManager;
 import com.frostbyte.player.Gamemode;
 
-public class GamemodeCommand extends Command{
-	public GamemodeCommand(GameManager gameManager) {
+public class CommandGamemode extends Command{
+	public CommandGamemode(GameManager gameManager) {
 		super("gamemode", gameManager);
 	}
 

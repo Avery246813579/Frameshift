@@ -1,27 +1,41 @@
-package com.frostbyte.display;
+package com.frostbyte.world;
 
 import java.awt.Graphics;
-import java.lang.reflect.Method;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import com.frostbyte.blocks.Block;
 import com.frostbyte.blocks.BlockAir;
 import com.frostbyte.blocks.BlockHelper;
-import com.frostbyte.entities.Entity;
-import com.frostbyte.items.ItemDrop;
+import com.frostbyte.display.ItemStack;
+import com.frostbyte.display.Location;
+import com.frostbyte.display.Material;
+import com.frostbyte.display.PlayerCamera;
+import com.frostbyte.entities.Gman;
+import com.frostbyte.entities.Pig;
+import com.frostbyte.entities.types.Entity;
+import com.frostbyte.items.types.ItemDrop;
 import com.frostbyte.player.Player;
 
 public class World {
+	private List<BufferedImage> breakImages = new ArrayList<BufferedImage>();
 	private String name;
 	private Block[][] blocks = new Block[4096][128];
 	private List<Entity> entities = new ArrayList<Entity>();
 	private Player player = new Player(this, 500, 1600);
 	private List<ItemDrop> drops = new ArrayList<ItemDrop>();
+	private WorldSaver worldSaver = new WorldSaver(this);
+	private int saveTime = 0;
 	PlayerCamera playerCamera;
 
 	public World(String name) {
 		entities.add(player);
+		entities.add(new Gman(this, 500, 1600));
+		entities.add(new Pig(this, 600, 1600));
+
 		playerCamera = new PlayerCamera(this, player);
 
 		for (int x = 0; x < blocks.length; x++) {
@@ -33,10 +47,11 @@ public class World {
 		this.name = name;
 
 		new WorldPopulator(this, WorldPopulator.OVERWORLD);
+		worldSaver.loadWorld();
 	}
 
 	public void draw(Graphics graphics) {
-		int renderDistance = 40;
+		int renderDistance = 50;
 
 		int startX = (int) (player.getX() / 20) - renderDistance;
 		int finishX = (int) (player.getX() / 20) + renderDistance;
@@ -65,6 +80,26 @@ public class World {
 					Block block = BlockHelper.getBlockType(blocks[x][y].getMaterial(), blocks[x][y].getLocation());
 					block.checkUpdateState();
 					graphics.drawImage(blocks[x][y].getImage(), (x * 20) - playerCamera.getX(), (y * 20) - playerCamera.getY(), null);
+
+					Block blockLocation = getBlockAtLocation(new Location(this, (x * 20), (y * 20)));
+					if (blockLocation.getDuration() < blockLocation.getMaxDuration()) {
+						double durationPercent = ((double) blockLocation.getDuration() / (double) blockLocation.getMaxDuration()) * 100;
+						int durationImage = 0;
+
+						if (durationPercent <= 20) {
+							durationImage = 4;
+						} else if (durationPercent <= 40) {
+							durationImage = 3;
+						} else if (durationPercent <= 60) {
+							durationImage = 2;
+						} else if (durationPercent <= 80) {
+							durationImage = 1;
+						} else {
+							durationImage = 0;
+						}
+
+						graphics.drawImage(getBreakImage(durationImage), (x * 20) - playerCamera.getX(), (y * 20) - playerCamera.getY(), null);
+					}
 				}
 			}
 		}
@@ -72,7 +107,7 @@ public class World {
 		if (!drops.isEmpty()) {
 			for (ItemDrop itemDrop : drops) {
 				itemDrop.draw(graphics);
-				
+
 				if (itemDrop.isRemoved()) {
 					break;
 				}
@@ -81,6 +116,18 @@ public class World {
 
 		for (Entity entity : entities) {
 			entity.draw(graphics);
+		}
+
+		if (player.inventoryOpen()) {
+			player.getInventory().draw(graphics);
+		}
+
+		if (player.getInventoryHotbar() != null) {
+			player.getInventoryHotbar().draw(graphics);
+		}
+
+		if (player.getCraftingInventory() != null && player.isInventoryOpen()) {
+			player.getCraftingInventory().draw(graphics);
 		}
 	}
 
@@ -108,7 +155,9 @@ public class World {
 	}
 
 	public void dropItem(ItemStack itemStack, Location location) {
-		drops.add(new ItemDrop(itemStack, location));
+		if (itemStack != null) {
+			drops.add(new ItemDrop(itemStack, location));
+		}
 	}
 
 	public void update() {
@@ -121,6 +170,10 @@ public class World {
 				entity.updateLocation();
 				entity.checkEntityCollisions();
 			}
+
+			if (!entities.contains(entity)) {
+				break;
+			}
 		}
 
 		if (!drops.isEmpty()) {
@@ -132,8 +185,31 @@ public class World {
 				}
 			}
 		}
+		
+		if(saveTime < 1500){
+			saveTime++;
+		}else{
+			worldSaver.saveWorld();
+			saveTime = 0;
+		}
 
 		playerCamera.updateMovement();
+	}
+
+	public BufferedImage getBreakImage(int i) {
+		if (breakImages.isEmpty()) {
+			try {
+				breakImages.add(ImageIO.read(getClass().getResourceAsStream("/GUI/BLOCK_BREAK_1.png")));
+				breakImages.add(ImageIO.read(getClass().getResourceAsStream("/GUI/BLOCK_BREAK_2.png")));
+				breakImages.add(ImageIO.read(getClass().getResourceAsStream("/GUI/BLOCK_BREAK_3.png")));
+				breakImages.add(ImageIO.read(getClass().getResourceAsStream("/GUI/BLOCK_BREAK_4.png")));
+				breakImages.add(ImageIO.read(getClass().getResourceAsStream("/GUI/BLOCK_BREAK_5.png")));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		return breakImages.get(i);
 	}
 
 	public String getName() {
@@ -180,23 +256,11 @@ public class World {
 		this.drops = drops;
 	}
 
-	public static Method getMethod(Class<?> cl, String method, Class<?>... args) {
-		for (Method m : cl.getMethods())
-			if (m.getName().equals(method) && ClassListEqual(args, m.getParameterTypes())) {
-				return m;
-			}
-		return null;
+	public WorldSaver getWorldSaver() {
+		return worldSaver;
 	}
 
-	public static boolean ClassListEqual(Class<?>[] l1, Class<?>[] l2) {
-		boolean equal = true;
-		if (l1.length != l2.length)
-			return false;
-		for (int i = 0; i < l1.length; i++)
-			if (l1[i] != l2[i]) {
-				equal = false;
-				break;
-			}
-		return equal;
+	public void setWorldSaver(WorldSaver worldSaver) {
+		this.worldSaver = worldSaver;
 	}
 }
