@@ -50,7 +50,7 @@ public abstract class Block {
 
 	public void setMaterial(Material material) {
 		this.material = material;
-		this.maxDuration = BlockHelper.getBlockType(material, getLocation()).getMaxDuration();
+		this.maxDuration = BlockHelper.getBlockType(material).getMaxDuration();
 		this.duration = maxDuration;
 		drop = new ItemStack(BlockHelper.getBlockType(material, getLocation()).getDrop().getMaterial(), 1);
 		dropChance = BlockHelper.getBlockType(material, getLocation()).getDropChance();

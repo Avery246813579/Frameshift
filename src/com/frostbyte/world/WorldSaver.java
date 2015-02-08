@@ -38,37 +38,14 @@ public class WorldSaver {
 	public void saveWorld() {
 		createFiles();
 
-		saveBlocks();
 		savePlayer();
+		saveEntities();
 	}
 
 	public void loadWorld() {
 		createFiles();
 
-		loadBlocks();
 		loadPlayer();
-	}
-
-	public void saveBlocks() {
-		FileWriter fileWriter;
-		try {
-			fileWriter = new FileWriter(FileUtil.path + "Worlds/" + world.getName() + "/blocks.dat");
-			for (int x = 0; x < world.getBlocks().length; x++) {
-
-				String chunkString = "";
-				for (int y = 0; y < world.getBlocks()[0].length; y++) {
-					chunkString = chunkString + " " + world.getBlocks()[x][y].getMaterial().toString() + "-" + world.getBlocks()[x][y].getDuration();
-				}
-
-				chunkString = chunkString.substring(1, chunkString.length());
-				chunkString = chunkString + "\n";
-				fileWriter.write(chunkString);
-			}
-
-			fileWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void savePlayer() {
@@ -76,8 +53,12 @@ public class WorldSaver {
 		try {
 			fileWriter = new FileWriter(FileUtil.path + "Worlds/" + world.getName() + "/player.dat");
 			fileWriter.write("X: " + world.getPlayer().getX() + "\n");
-			fileWriter.write("Y: " + world.getPlayer().getX() + "\n");
-
+			fileWriter.write("Y: " + world.getPlayer().getY() + "\n");
+			fileWriter.write("Right: " + world.getPlayer().isFacingRight());
+			fileWriter.write("Health: " + world.getPlayer().getHealth() + " " + world.getPlayer().getMaxHealth());
+			fileWriter.write("Hunger: " + world.getPlayer().getHunger() + " " + world.getPlayer().getMaxHunger());
+			fileWriter.write("Stamina: " + world.getPlayer().getStamina() + " " + world.getPlayer().getMaxStamina());
+			
 			String inventoryString = "";
 			for (int i = 0; i < world.getPlayer().getInventory().getContent().length; i++) {
 				ItemStack itemStack = world.getPlayer().getInventory().getContent()[i];
@@ -96,30 +77,15 @@ public class WorldSaver {
 			e.printStackTrace();
 		}
 	}
-
-	public void loadBlocks() {
-		try {
-			BufferedReader fileReader = new BufferedReader(new FileReader(new File(FileUtil.path + "Worlds/" + world.getName() + "/blocks.dat")));
-
-			String data;
-			int line = 0;
-			while ((data = fileReader.readLine()) != null) {
-				int y = 0;
-				for (String s : data.split(" ")) {
-					if (world.getBlocks()[line][y].getMaterial() != Material.AIR) {
-						world.getBlocks()[line][y].setMaterial(Material.fromString(s.split("-")[0]));
-						world.getBlocks()[line][y].setDuration((Integer.parseInt(s.split("-")[1])));
-					}
-
-					y++;
-				}
-
-				line++;
-			}
-
-			fileReader.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+	
+	public void saveEntities(){
+		FileWriter fileWriter;
+		try{
+			fileWriter = new FileWriter(FileUtil.path + "Worlds/" + world.getName() + "/entities.dat");
+			fileWriter.write("");
+			fileWriter.close();
+		}catch(IOException ex){
+			ex.printStackTrace();
 		}
 	}
 
@@ -134,9 +100,28 @@ public class WorldSaver {
 				}
 
 				if (data.startsWith("Y: ")) {
-					world.getPlayer().setX(Integer.parseInt(data.split(" ")[1]));
+					world.getPlayer().setY(Integer.parseInt(data.split(" ")[1]));
 				}
-
+				
+				if(data.startsWith("Right")){
+					world.getPlayer().setFacingRight(Boolean.parseBoolean(data.split(" ")[1]));
+				}
+				
+				if(data.startsWith("Health: ")){
+					world.getPlayer().setHealth(Integer.parseInt(data.split(" ")[1]));
+					world.getPlayer().setMaxHealth(Integer.parseInt(data.split(" ")[2]));
+				}
+				
+				if(data.startsWith("Hunger: ")){
+					world.getPlayer().setHunger(Integer.parseInt(data.split(" ")[1]));
+					world.getPlayer().setMaxHunger(Integer.parseInt(data.split(" ")[2]));
+				}
+				
+				if(data.startsWith("Stamina: ")){
+					world.getPlayer().setStamina(Double.parseDouble(data.split(" ")[1]));
+					world.getPlayer().setMaxStamina(Double.parseDouble(data.split(" ")[2]));
+				}
+				
 				if (data.startsWith("Inventory:")) {
 					int i = -1;
 

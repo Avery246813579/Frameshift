@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.frostbyte.display.Animation;
 import com.frostbyte.display.ItemStack;
-import com.frostbyte.display.Material;
 import com.frostbyte.entities.types.Entity;
 import com.frostbyte.entities.types.LivingEntity;
 import com.frostbyte.inventories.CraftingInventory;
@@ -48,11 +47,10 @@ public class Player extends LivingEntity {
 
 		this.inventory = new Inventory(this, "Test", 40);
 		this.inventoryHotbar = new InventoryHotbar(this);
-		this.itemInHand = new ItemStack(Material.STONE, 1);
 
 		this.craftingInventory = new CraftingInventory(this, 14);
 
-		this.health = this.hunger = this.maxHealth = 20;
+		this.health = this.maxHunger =  this.hunger = this.maxHealth = 20;
 		this.stamina = this.maxStamina = 100;
 		this.damage = 5;
 	}
@@ -66,11 +64,11 @@ public class Player extends LivingEntity {
 	}
 
 	public void checkMovement() {
-		Rectangle2D playerRect = new Rectangle(getX(), getY(), width, height);
+		Rectangle2D playerRect = new Rectangle(getX(), getY(), width * 2, height * 2);
 
 		if (!getWorld().getDrops().isEmpty()) {
 			for (ItemDrop itemDrop : getWorld().getDrops()) {
-				Rectangle2D itemRect = new Rectangle(itemDrop.getLocation().getX(), itemDrop.getLocation().getY(), 10, 10);
+				Rectangle2D itemRect = new Rectangle(itemDrop.getLocation().getX(), itemDrop.getLocation().getY(), 20, 20);
 
 				if (itemRect.intersects(playerRect) && !getInventory().isAddingItem()) {
 					if (!inventory.isFull()) {

@@ -16,7 +16,7 @@ public abstract class LivingEntity extends Entity {
 	protected List<ItemStack> drops = new ArrayList<ItemStack>();
 	protected boolean isJumping, isFalling, isRight, isLeft, isRunning, inJump, isTired;
 	protected int moveSpeed, jumpSpeed, fallSpeed, maxSpeed, maxJump, maxFall, maxRun;
-	protected int health, hunger, maxHealth, jumpDistance, maxJumpDistance, damage, deathWait, armor;
+	protected int health, hunger, maxHealth, maxHunger, jumpDistance, maxJumpDistance, damage, deathWait, armor;
 	protected double stamina, maxStamina;
 
 	public static final int IDLE = 0;
@@ -286,6 +286,10 @@ public abstract class LivingEntity extends Entity {
 	public int getHealth() {
 		return health;
 	}
+	
+	public void setHealth(int health){
+		this.health = health;
+	}
 
 	public int getDamage() {
 		return damage;
@@ -315,7 +319,47 @@ public abstract class LivingEntity extends Entity {
 		return facingRight;
 	}
 
+	public int getMaxHealth() {
+		return maxHealth;
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
+	}
+
 	public void setFacingRight(boolean facingRight) {
 		this.facingRight = facingRight;
+	}
+
+	public int getHunger() {
+		return hunger;
+	}
+
+	public void setHunger(int hunger) {
+		this.hunger = hunger;
+	}
+
+	public int getMaxHunger() {
+		return maxHunger;
+	}
+
+	public void setMaxHunger(int maxHunger) {
+		this.maxHunger = maxHunger;
+	}
+
+	public double getStamina() {
+		return stamina;
+	}
+
+	public void setStamina(double stamina) {
+		this.stamina = stamina;
+	}
+
+	public double getMaxStamina() {
+		return maxStamina;
+	}
+
+	public void setMaxStamina(double maxStamina) {
+		this.maxStamina = maxStamina;
 	}
 }

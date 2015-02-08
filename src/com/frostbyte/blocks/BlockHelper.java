@@ -24,6 +24,20 @@ public class BlockHelper {
 		return null;
 	}
 	
+	public static Block getBlockType(Material material){
+		if(blocks.isEmpty()){
+			loadBlocks();
+		}
+		
+		for(Block block : blocks){
+			if(block.getMaterial() == material){
+				return block;
+			}
+		}
+		
+		return null;
+	}
+	
 	public static Class<?> getBlockClass(Material material){
 		if(blocks.isEmpty()){
 			loadBlocks();

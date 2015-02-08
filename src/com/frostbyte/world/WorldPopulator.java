@@ -35,15 +35,15 @@ public class WorldPopulator {
 					currentBlock.setMaterial(Material.BEDROCK);
 				}
 
-				if (oppSide > 1 && oppSide < 40) {
+				if (oppSide > 1 && oppSide < 900) {
 					currentBlock.setMaterial(Material.STONE);
 				}
 
-				if (oppSide == 40) {
+				if (oppSide == 900) {
 					currentBlock.setMaterial(Material.DIRT);
 				}
 
-				if (oppSide == 41) {
+				if (oppSide == 901) {
 					currentBlock.setMaterial(Material.DIRT);
 				}
 			}
@@ -62,19 +62,19 @@ public class WorldPopulator {
 				int oppSide = world.getBlocks()[0].length - y;
 
 				if (worldType == OVERWORLD) {
-					if (oppSide > 1 && oppSide < 13 && MathUtil.getRandomBoolean(.1)) {
+					if (oppSide > 1 && oppSide < 350 && MathUtil.getRandomBoolean(.1)) {
 						generateOreChunk(Material.PYRITE_ORE, x, y);
 					}
 
-					if (oppSide > 14 && oppSide < 27 && MathUtil.getRandomBoolean(.2)) {
+					if (oppSide > 350 && oppSide < 700 && MathUtil.getRandomBoolean(.2)) {
 						generateOreChunk(Material.IRON_ORE, x, y);
 					}
 
-					if (oppSide > 28 && oppSide < 39 && MathUtil.getRandomBoolean(.3)) {
+					if (oppSide > 700 && oppSide < 900 && MathUtil.getRandomBoolean(.3)) {
 						generateOreChunk(Material.QUARTZ_ORE, x, y);
 					}
 
-					if (oppSide > 1 && oppSide < 39 && MathUtil.getRandomBoolean(.1)) {
+					if (oppSide > 1 && oppSide < 900 && MathUtil.getRandomBoolean(.1)) {
 						generateOreChunk(Material.COAL_ORE, x, y);
 					}
 				}
@@ -107,7 +107,7 @@ public class WorldPopulator {
 			for (int y = (world.getBlocks()[0].length - 1); y > 0; y--) {
 				int oppSide = world.getBlocks()[0].length - y;
 
-				if (oppSide == 42 && MathUtil.getRandomBoolean(3)) {
+				if (oppSide == 902 && MathUtil.getRandomBoolean(3)) {
 					randomHill(x, y);
 				}
 			}
@@ -153,11 +153,11 @@ public class WorldPopulator {
 			for (int y = (world.getBlocks()[0].length - 1); y > 0; y--) {
 				int oppSide = world.getBlocks()[0].length - y;
 
-				if (oppSide == 42) {
+				if (oppSide == 902) {
 					distanceBetween++;
 				}
 				
-				if (oppSide == 42 && MathUtil.getRandomBoolean(10) && world.getBlockAtLocation(new Location(world, x * 20, y * 20)).getMaterial() == Material.AIR) {
+				if (oppSide == 902 && MathUtil.getRandomBoolean(10) && world.getBlockAtLocation(new Location(world, x * 20, y * 20)).getMaterial() == Material.AIR) {
 					if (distanceBetween >= 10) {
 						distanceBetween = 0;
 						createTree(x, y);
@@ -217,7 +217,7 @@ public class WorldPopulator {
 			for (int y = (world.getBlocks()[0].length - 1); y > 0; y--) {
 				int oppSide = world.getBlocks()[0].length - y;
 				
-				if(oppSide == 42 && MathUtil.getRandomBoolean(5) && world.getBlockAtLocation(new Location(world, x * 20, y * 20)).getMaterial() == Material.AIR){
+				if(oppSide == 902 && MathUtil.getRandomBoolean(5) && world.getBlockAtLocation(new Location(world, x * 20, y * 20)).getMaterial() == Material.AIR){
 					world.getBlocks()[x][y].setMaterial(Material.ROCK);
 				}
 			}	

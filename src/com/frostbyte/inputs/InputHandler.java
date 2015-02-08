@@ -15,6 +15,7 @@ import com.frostbyte.items.types.Item;
 import com.frostbyte.main.GameFrame;
 import com.frostbyte.main.GameManager;
 import com.frostbyte.player.Player;
+import com.frostbyte.world.WorldChunk;
 
 public class InputHandler implements MouseListener, KeyListener, MouseMotionListener {
 	public List<MouseInput> inputs = new ArrayList<MouseInput>();
@@ -143,7 +144,6 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 
 	public void mousePressed(MouseEvent event) {
 		if (gameManager.inGame) {
-
 			if (event.getButton() == MouseEvent.BUTTON1) {
 				lastButton = MouseEvent.BUTTON1;
 
@@ -159,6 +159,10 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 				if (gameManager.world.getPlayer().getItemInHand() instanceof Item) {
 					((Item) gameManager.world.getPlayer().getItemInHand()).interact(gameManager.world.getPlayer().getLocation(), new Location(gameManager.world, event.getX(), event.getY()));
 					inputs.add(new MouseInput(gameManager.world.getPlayer(), gameManager.world.getPlayer().getItemInHand(), InputType.ITEM, event.getX(), event.getY()));
+					WorldChunk chunk = gameManager.world.getChunkHandler().findWorldChunk(event.getX(), event.getY());
+					if (!new Location(gameManager.world, event.getX(), event.getY()).getWorld().getChunkHandler().activeChunks.contains(chunk)) {
+						new Location(gameManager.world, event.getX(), event.getY()).getWorld().getChunkHandler().activeChunks.add(chunk);
+					}
 					return;
 				}
 
@@ -167,6 +171,10 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 				if (gameManager.world.getBlockAtLocation(dropLocation).getMaterial() != Material.AIR) {
 					gameManager.blockListener.onBlockBreak(gameManager.world.getPlayer(), gameManager.world.getBlockAtLocation(dropLocation), dropLocation);
 					inputs.add(new MouseInput(gameManager.world.getPlayer(), gameManager.world.getBlockAtLocation(dropLocation), InputType.BREAK, event.getX(), event.getY()));
+					WorldChunk chunk = gameManager.world.getChunkHandler().findWorldChunk(event.getX(), event.getY());
+					if (!new Location(gameManager.world, event.getX(), event.getY()).getWorld().getChunkHandler().activeChunks.contains(chunk)) {
+						new Location(gameManager.world, event.getX(), event.getY()).getWorld().getChunkHandler().activeChunks.add(chunk);
+					}
 				}
 			}
 
@@ -177,6 +185,11 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 
 				if (gameManager.world.getPlayer().getItemInHand() != null) {
 					gameManager.blockListener.onBlockPlace(gameManager.world.getPlayer(), BlockHelper.getBlockType(gameManager.world.getPlayer().getItemInHand().getMaterial(), null), placeLocation);
+				}
+
+				WorldChunk chunk = gameManager.world.getChunkHandler().findWorldChunk(event.getX(), event.getY());
+				if (!new Location(gameManager.world, event.getX(), event.getY()).getWorld().getChunkHandler().activeChunks.contains(chunk)) {
+					new Location(gameManager.world, event.getX(), event.getY()).getWorld().getChunkHandler().activeChunks.add(chunk);
 				}
 			}
 		} else {
@@ -323,8 +336,12 @@ public class InputHandler implements MouseListener, KeyListener, MouseMotionList
 			}
 
 			if (input.getInputType() == InputType.BREAK || input.getInputType() == InputType.ITEM) {
-				if (input.getBlock().getLocation() != gameManager.world.getBlockAtLocation(new Location(gameManager.world, event.getX() + gameManager.world.getPlayerCamera().getX(), event.getY() + gameManager.world.getPlayerCamera().getY())).getLocation()) {
-					inputs.remove(input);
+				if (input.getBlock() != null) {
+					return;
+				} else {
+					if (input.getBlock().getLocation() != gameManager.world.getBlockAtLocation(new Location(gameManager.world, event.getX() + gameManager.world.getPlayerCamera().getX(), event.getY() + gameManager.world.getPlayerCamera().getY())).getLocation()) {
+						inputs.remove(input);
+					}
 				}
 			}
 

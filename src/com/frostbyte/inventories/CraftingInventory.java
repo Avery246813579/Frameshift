@@ -45,7 +45,7 @@ public class CraftingInventory {
 	}
 
 	public void draw(Graphics g) {
-		int startX = GameFrame.WIDTH / 2 + 134;
+		int startX = GameFrame.WIDTH / 3 + 268;
 		int startY = GameFrame.HEIGHT / 3 + 92;
 
 		int x = startX;
@@ -58,11 +58,11 @@ public class CraftingInventory {
 			}
 
 			if (i == 12) {
-				x = 617;
-				y = 269;
+				x = GameFrame.WIDTH / 2 + 28;
+				y = GameFrame.HEIGHT / 3 + 69;
 			} else if (i == 13) {
-				x = 617;
-				y = 269 - 23;
+				x = GameFrame.WIDTH / 2 + 28;
+				y = GameFrame.HEIGHT / 3 + 69 - 23;
 			} else {
 
 				if (i <= 11) {
@@ -169,7 +169,7 @@ public class CraftingInventory {
 		}
 	}
 
-	public void remove(Material material) {
+	public void remove(Material material) { 
 		for (int i = 0; i < 40; i++) {
 			ItemStack itemStack = content[i];
 
@@ -183,7 +183,7 @@ public class CraftingInventory {
 	}
 
 	public int getInventorySlot(int rawX, int rawY) {
-		int startX = GameFrame.WIDTH / 2 + 134;
+		int startX = GameFrame.WIDTH / 3 + 268;
 		int startY = GameFrame.HEIGHT / 3 + 92;
 
 		int x = startX;
@@ -196,11 +196,11 @@ public class CraftingInventory {
 			}
 
 			if (i == 12) {
-				x = 617;
-				y = 269;
+				x = GameFrame.WIDTH / 2 + 28;
+				y = GameFrame.HEIGHT / 3 + 69;
 			} else if (i == 13) {
-				x = 617;
-				y = 269 - 23;
+				x = GameFrame.WIDTH / 2 + 28;
+				y = GameFrame.HEIGHT / 3 + 69 - 23;
 			} else {
 
 				if (i <= 11) {

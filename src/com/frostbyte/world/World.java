@@ -2,6 +2,7 @@ package com.frostbyte.world;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,23 +19,25 @@ import com.frostbyte.entities.Gman;
 import com.frostbyte.entities.Pig;
 import com.frostbyte.entities.types.Entity;
 import com.frostbyte.items.types.ItemDrop;
+import com.frostbyte.main.GameFrame;
 import com.frostbyte.player.Player;
+import com.frostbyte.util.FileUtil;
 
 public class World {
+	private ChunkHandler chunkHandler = new ChunkHandler(this);
+	private WorldSaver worldSaver = new WorldSaver(this);
 	private List<BufferedImage> breakImages = new ArrayList<BufferedImage>();
 	private String name;
-	private Block[][] blocks = new Block[4096][128];
+	private Block[][] blocks = new Block[4096][1024];
 	private List<Entity> entities = new ArrayList<Entity>();
-	private Player player = new Player(this, 500, 1600);
+	private Player player = new Player(this, 250, 800);
 	private List<ItemDrop> drops = new ArrayList<ItemDrop>();
-	private WorldSaver worldSaver = new WorldSaver(this);
-	private int saveTime = 0;
 	PlayerCamera playerCamera;
 
 	public World(String name) {
 		entities.add(player);
-		entities.add(new Gman(this, 500, 1600));
-		entities.add(new Pig(this, 600, 1600));
+		entities.add(new Gman(this, 250, 800));
+		entities.add(new Pig(this, 250, 800));
 
 		playerCamera = new PlayerCamera(this, player);
 
@@ -46,12 +49,22 @@ public class World {
 
 		this.name = name;
 
-		new WorldPopulator(this, WorldPopulator.OVERWORLD);
-		worldSaver.loadWorld();
+		if (new File(FileUtil.path + "Worlds/" + name).exists()) {
+			chunkHandler.loadChunks();
+			worldSaver.loadWorld();
+		} else {
+			new WorldPopulator(this, WorldPopulator.OVERWORLD);
+			chunkHandler.createChunks();
+			chunkHandler.loadChunks();
+		}
 	}
 
 	public void draw(Graphics graphics) {
-		int renderDistance = 50;
+		int renderDistance = (GameFrame.HEIGHT / 20);
+
+		if (renderDistance < (GameFrame.WIDTH / 20)) {
+			renderDistance = (GameFrame.WIDTH / 20);
+		}
 
 		int startX = (int) (player.getX() / 20) - renderDistance;
 		int finishX = (int) (player.getX() / 20) + renderDistance;
@@ -103,7 +116,7 @@ public class World {
 				}
 			}
 		}
-
+		
 		if (!drops.isEmpty()) {
 			for (ItemDrop itemDrop : drops) {
 				itemDrop.draw(graphics);
@@ -185,13 +198,6 @@ public class World {
 				}
 			}
 		}
-		
-		if(saveTime < 1500){
-			saveTime++;
-		}else{
-			worldSaver.saveWorld();
-			saveTime = 0;
-		}
 
 		playerCamera.updateMovement();
 	}
@@ -254,6 +260,14 @@ public class World {
 
 	public void setDrops(List<ItemDrop> drops) {
 		this.drops = drops;
+	}
+
+	public ChunkHandler getChunkHandler() {
+		return chunkHandler;
+	}
+
+	public void setChunkHandler(ChunkHandler chunkHandler) {
+		this.chunkHandler = chunkHandler;
 	}
 
 	public WorldSaver getWorldSaver() {

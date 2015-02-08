@@ -18,13 +18,15 @@ import com.frostbyte.listeners.BlockListener;
 import com.frostbyte.listeners.EntityListener;
 import com.frostbyte.listeners.InventoryListener;
 import com.frostbyte.menus.GameMenu;
+import com.frostbyte.menus.LoadMenu;
 import com.frostbyte.menus.Menu;
+import com.frostbyte.menus.SaveMenu;
 import com.frostbyte.world.World;
 
 public class GameManager {
 	/** Classes **/
 	GameLoop gameLoop = new GameLoop(this);
-	public GameFrame gameFrame = new GameFrame();
+	public GameFrame gameFrame = new GameFrame(this);
 	public InputHandler inputHandler = new InputHandler(this);
 
 	/** Listeners **/
@@ -33,8 +35,8 @@ public class GameManager {
 	public InventoryListener inventoryListener = new InventoryListener(this);
 
 	/** Variables **/
-	public List<Menu> menus = new ArrayList<Menu>(Arrays.asList(new GameMenu(this)));
-	public World world = new World("Test World");
+	public List<Menu> menus = new ArrayList<Menu>(Arrays.asList(new GameMenu(this), new SaveMenu(this), new LoadMenu(this)));
+	public World world;
 	private boolean running;
 	public boolean inGame = false;
 	public int currentMenu;
@@ -94,6 +96,12 @@ public class GameManager {
 				menus.get(currentMenu).update();
 			}
 		}
+	}
+
+	public void startGame() {
+		currentMenu = 2;
+		world = new World("Test World");
+		inGame = true;
 	}
 
 	public void draw(Graphics g) {

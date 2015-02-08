@@ -9,8 +9,10 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import com.frostbyte.audio.Song;
 import com.frostbyte.main.GameFrame;
 import com.frostbyte.main.GameManager;
+import com.frostbyte.util.SoundUtil;
 
 public class GameMenu extends Menu {
 	private List<BufferedImage> images = new ArrayList<BufferedImage>();
@@ -26,6 +28,7 @@ public class GameMenu extends Menu {
 			images.add(ImageIO.read(getClass().getResourceAsStream("/GUI/MENU_PLAY_CLICK.png")));
 			images.add(ImageIO.read(getClass().getResourceAsStream("/GUI/MENU_OPTIONS_CLICK.png")));
 			images.add(ImageIO.read(getClass().getResourceAsStream("/GUI/MENU_QUIT_CLICK.png")));
+			SoundUtil.playSong(Song.INTRO);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -99,7 +102,7 @@ public class GameMenu extends Menu {
 
 	@Override
 	public void onKeyPressed(int x) {
-		
+
 	}
 
 	@Override
@@ -123,17 +126,18 @@ public class GameMenu extends Menu {
 			Rectangle2D imageRect = new Rectangle((GameFrame.WIDTH / 2) - (bufferedImage.getWidth() / 2), rectY, bufferedImage.getWidth(), bufferedImage.getHeight());
 
 			if (playerRect.intersects(imageRect)) {
-				if(i == 0){
-					gameManager.inGame = true;
+				if (i == 0) {
+					gameManager.startGame();
+					SoundUtil.stopMusic();
 				}
-				
-				if(i == 2){
+
+				if (i == 2) {
 					System.exit(0);
 					gameManager.gameFrame.dispose();
 					gameManager.gameFrame.setVisible(false);
 				}
-			} 
-			
+			}
+
 			i++;
 		}
 	}
