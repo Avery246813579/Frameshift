@@ -11,7 +11,7 @@ public class GameLoop extends Thread implements Runnable {
 		while (gameManager.isRunning()) {
 			synchronized (this) {
 				try {
-					wait(20);
+					wait(15);
 					gameManager.drawOffScreen();
 					gameManager.update();
 				} catch (InterruptedException e) {

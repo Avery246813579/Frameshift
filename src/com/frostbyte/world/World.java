@@ -15,6 +15,7 @@ import com.frostbyte.display.ItemStack;
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
 import com.frostbyte.display.PlayerCamera;
+import com.frostbyte.display.Shaders;
 import com.frostbyte.entities.Gman;
 import com.frostbyte.entities.Pig;
 import com.frostbyte.entities.types.Entity;
@@ -32,6 +33,7 @@ public class World {
 	private List<Entity> entities = new ArrayList<Entity>();
 	private Player player = new Player(this, 250, 800);
 	private List<ItemDrop> drops = new ArrayList<ItemDrop>();
+	private Shaders shaders = new Shaders(this);
 	PlayerCamera playerCamera;
 
 	public World(String name) {
@@ -142,6 +144,8 @@ public class World {
 		if (player.getCraftingInventory() != null && player.isInventoryOpen()) {
 			player.getCraftingInventory().draw(graphics);
 		}
+		
+		shaders.draw(graphics);
 	}
 
 	public Block getBlockAtLocation(Location location) {
@@ -198,7 +202,7 @@ public class World {
 				}
 			}
 		}
-
+		
 		playerCamera.updateMovement();
 	}
 

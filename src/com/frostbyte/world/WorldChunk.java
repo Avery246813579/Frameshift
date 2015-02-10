@@ -1,10 +1,13 @@
 package com.frostbyte.world;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
 import com.frostbyte.display.Location;
 import com.frostbyte.display.Material;
@@ -64,16 +67,16 @@ public class WorldChunk {
 	}
 
 	public synchronized void save() {
-		FileWriter fileWriter;
+		BufferedWriter fileWriter;
 		try {
-			fileWriter = new FileWriter(chunkFile);
+			fileWriter = new BufferedWriter(new FileWriter(chunkFile));
 
 			fileWriter.write("MIN: " + minLoc.getX() + " " + minLoc.getY() + "\n");
 			fileWriter.write("MAX: " + maxLoc.getX() + " " + maxLoc.getY() + "\n");
-			for (int x = 0; x < world.getBlocks().length; x++) {
+			for (int x = minLoc.getX(); x < maxLoc.getX(); x++) {
 
 				String chunkString = "";
-				for (int y = 0; y < world.getBlocks()[0].length; y++) {
+				for (int y = minLoc.getY(); y < maxLoc.getY(); y++) {
 					chunkString = chunkString + " " + world.getBlocks()[x][y].getMaterial().getDrawInt() + "-" + world.getBlocks()[x][y].getDuration();
 				}
 
@@ -83,6 +86,19 @@ public class WorldChunk {
 			}
 
 			fileWriter.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void changeBlock(int x, int y){
+		RandomAccessFile randomAccessFile;
+		try {
+			randomAccessFile = new RandomAccessFile(chunkFile, "rw");
+			randomAccessFile.seek(x - minLoc.getX());
+			
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -56,7 +56,6 @@ public class ChunkHandler {
 
 		while (done) {
 			FileUtil.createFile("Worlds/" + world.getName() + "/Chunks/C" + chunk);
-			System.out.println(maxX + " " + maxY + " " + minX + " " + minY);
 
 			FileWriter fileWriter;
 			try {

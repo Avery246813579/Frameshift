@@ -13,7 +13,7 @@ public class GameFrame extends JFrame implements ComponentListener {
 	public static int WIDTH = 800, HEIGHT = 600;
 
 	public GameFrame(final GameManager gameManager) {
-		setTitle("Frameshift Alpha v1.0.0");
+		setTitle("Frameshift Pre-Alpha v1.0.0");
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setDefaultCloseOperation(3);
 		pack();
@@ -33,11 +33,9 @@ public class GameFrame extends JFrame implements ComponentListener {
 	}
 
 	public void componentHidden(ComponentEvent arg0) {
-
 	}
 
 	public void componentMoved(ComponentEvent arg0) {
-
 	}
 
 	public void componentResized(ComponentEvent event) {
@@ -47,6 +45,5 @@ public class GameFrame extends JFrame implements ComponentListener {
 	}
 
 	public void componentShown(ComponentEvent arg0) {
-		// TODO Auto-generated method stub
 	}
 }
