@@ -10,7 +10,6 @@ import java.util.List;
 import com.frostbyte.blocks.BlockHelper;
 import com.frostbyte.commands.CommandManager;
 import com.frostbyte.display.Location;
-import com.frostbyte.display.Shaders;
 import com.frostbyte.inputs.InputHandler;
 import com.frostbyte.inputs.InputType;
 import com.frostbyte.inputs.MouseInput;

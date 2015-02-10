@@ -29,9 +29,9 @@ public class World {
 	private WorldSaver worldSaver = new WorldSaver(this);
 	private List<BufferedImage> breakImages = new ArrayList<BufferedImage>();
 	private String name;
-	private Block[][] blocks = new Block[4096][1024];
+	private Block[][] blocks = new Block[2096][1024];
 	private List<Entity> entities = new ArrayList<Entity>();
-	private Player player = new Player(this, 250, 800);
+	private Player player = new Player(this, 250, 850);
 	private List<ItemDrop> drops = new ArrayList<ItemDrop>();
 	private Shaders shaders = new Shaders(this);
 	PlayerCamera playerCamera;
